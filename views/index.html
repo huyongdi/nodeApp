@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>调查问卷</title>
+    <link rel="stylesheet" href="stylesheets/index.css">
+</head>
+<body>
+<div class="all-content">
+    <p class="title">调查问卷</p>
+    <div class="qe-content">
+        <div class="one">
+            <div class="title">1.下面哪一个和javascript关联性最强</div>
+            <div class="option">
+                <input type="radio" name="js" value="nodejs"/> nodejs
+                <input type="radio" name="js" value="java"/> java
+                <input type="radio" name="js" value="python"/> python
+            </div>
+        </div>
+
+        <div class="one">
+            <div class="title">2.你的年龄</div>
+            <div class="option">
+                <select name="age" id="">
+                    <option value="20"><20</option>
+                    <option value="20-40">20-40</option>
+                    <option value="40-60">40-60</option>
+                    <option value=">60">>60</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="one">
+            <div class="title">3.张真人指的是谁</div>
+            <div class="option">
+                <input id="name" value=""/>
+            </div>
+        </div>
+
+        <div class="one">
+            <div class="title">4.天王盖地虎下一句</div>
+            <div class="option">
+                <input id="sentence" value=""/>
+            </div>
+        </div>
+
+        <div class="one">
+            <div class="title">5.放松的时候你会干什么(多选)</div>
+            <div class="option">
+                <input type="checkbox" name="relax" value="睡觉"/> 睡觉
+                <input type="checkbox" name="relax" value="看电视"/> 看电视
+                <input type="checkbox" name="relax" value="打游戏"/> 打游戏
+                <input type="checkbox" name="relax" value="散步"/> 散步
+                <input type="checkbox" name="relax" value="听歌"/> 听歌
+            </div>
+        </div>
+
+        <div class="one">
+            <div class="title">6.您的联系方式</div>
+            <div class="option">
+                <input id="tel" value=""/>
+            </div>
+        </div>
+    </div>
+    <div class="btn-content">
+        <button id="submit">提交</button>
+    </div>
+</div>
+</body>
+
+<script>
+  document.getElementsByTagName('html')[0].style.fontSize = window.innerWidth / 10 + 'px';
+  document.getElementById('submit').addEventListener('click', function () {
+    let postData = ['js=' + getRadioButtonCheckedValue('js'), 'age=' + getSelectValue('age'), 'relax=' + getCheckboxValue('relax')].join('&');
+    postData = postData + '&name=' + document.getElementById('name').value + '&sentence=' + document.getElementById('sentence').value + '&tel=' +
+        document.getElementById('tel').value;
+    let xhr = new XMLHttpRequest();
+    xhr.open('post', 'submit');
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(postData);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        const data = (JSON.parse(xhr.responseText))[0];
+        alert('当前的已保存到数据库，通过数据库查询结果为：'+data.id+'：'+'与javascript关联性最强的'+data.js+'....');
+      }
+    };
+  });
+
+  /**
+   * 获取选择框的值
+   */
+  function getSelectValue(name) {
+    return document.getElementsByName(name)[0].value
+  }
+
+  /**
+   * 获取单选框的值
+   * @param tagNameAttr
+   * @returns {*}
+   */
+  function getRadioButtonCheckedValue(tagNameAttr) {
+    const radio_tag = document.getElementsByName(tagNameAttr);
+    for (let i = 0; i < radio_tag.length; i++) {
+      if (radio_tag[i].checked) {
+        return radio_tag[i].value;
+      }
+    }
+  }
+
+  /**
+   * 获取多选框的值
+   */
+  function getCheckboxValue(name) {
+    const checkbox_tag = document.getElementsByName(name);
+    let arr = [];
+    for (let i = 0; i < checkbox_tag.length; i++) {
+      if (checkbox_tag[i].checked)
+        arr.push(checkbox_tag[i].value);
+    }
+    return arr.toString()
+  }
+
+</script>
+</html>
